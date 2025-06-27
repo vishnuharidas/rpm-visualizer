@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive RPM Visualizer - Adjust the RPM and see a bar rotate at different speeds. Great for learning and demonstrations.">
+    <meta name="keywords" content="RPM, Visualizer, Rotation, Animation, Speed, Demo, Interactive, Web App">
+    <meta name="author" content="Vishnu Haridas & Copilot">
+    <meta property="og:title" content="RPM Visualizer">
+    <meta property="og:description" content="Adjust the RPM value to see the bar rotate at different speeds. 1 RPM = 1 complete rotation per minute.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:title" content="RPM Visualizer">
+    <meta name="twitter:description" content="Interactive RPM Visualizer - Adjust the RPM and see a bar rotate at different speeds.">
+    <title>RPM Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .visualizer {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 40px auto;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .rotating-bar {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120px;
+            height: 6px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57);
+            border-radius: 3px;
+            transform-origin: 0% 50%;
+            transform: translate(0, -50%);
+            animation: rotate 60s linear infinite;
+            box-shadow: 0 0 20px rgba(255,107,107,0.5);
+        }
+
+        @keyframes rotate {
+            from {
+                transform: translate(0, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(0, -50%) rotate(360deg);
+            }
+        }
+
+        .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px rgba(255,107,107,0.7);
+        }
+
+        .controls {
+            margin-top: 40px;
+        }
+
+        .rpm-display {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        #rpmInput {
+            width: 100px;
+            height: 50px;
+            font-size: 1.4em;
+            text-align: center;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        #rpmInput:focus {
+            outline: none;
+            box-shadow: 0 4px 20px rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .info {
+            margin-top: 30px;
+            font-size: 0.9em;
+            opacity: 0.8;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RPM Visualizer</h1>
+        
+        <div class="visualizer">
+            <div class="rotating-bar" id="rotatingBar"></div>
+            <div class="center-dot"></div>
+        </div>
+        
+        <div class="controls">
+            <div class="rpm-display">
+                Current Speed: <span id="currentRpm">1</span> RPM
+            </div>
+            
+            <div class="input-group">
+                <label for="rpmInput">Set RPM:</label>
+                <input type="number" id="rpmInput" value="1" min="0" max="1000" step="1">
+            </div>
+        </div>
+        
+        <div class="info">
+            Adjust the RPM value to see the bar rotate at different speeds. 
+            1 RPM = 1 complete rotation per minute.
+        </div>
+    </div>
+
+    <script>
+        const rpmInput = document.getElementById('rpmInput');
+        const rotatingBar = document.getElementById('rotatingBar');
+        const currentRpmDisplay = document.getElementById('currentRpm');
+
+        function updateRotation() {
+            const rpm = parseFloat(rpmInput.value) || 0;
+            
+            // Update display
+            currentRpmDisplay.textContent = rpm;
+            
+            // Calculate animation duration (60 seconds / RPM)
+            // If RPM is 0, stop the animation
+            if (rpm === 0) {
+                rotatingBar.style.animationPlayState = 'paused';
+                speedText.textContent = 'Stopped';
+            } else {
+                const duration = 60 / rpm; // seconds for one full rotation
+                rotatingBar.style.animationDuration = duration + 's';
+                rotatingBar.style.animationPlayState = 'running';
+            }
+        }
+
+        // Event listener for input changes
+        rpmInput.addEventListener('input', updateRotation);
+        rpmInput.addEventListener('change', updateRotation);
+
+        // Initialize with 1 RPM
+        updateRotation();
+
+        // Add keyboard shortcuts for quick adjustments
+        document.addEventListener('keydown', function(e) {
+            if (e.target === rpmInput) return; // Don't interfere when typing in input
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                    e.preventDefault();
+                    rpmInput.value = Math.min(1000, parseInt(rpmInput.value) + 1);
+                    updateRotation();
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    rpmInput.value = Math.max(0, parseInt(rpmInput.value) - 1);
+                    updateRotation();
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    rpmInput.value = rpmInput.value === '0' ? '1' : '0';
+                    updateRotation();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
