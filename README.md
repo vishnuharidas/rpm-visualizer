@@ -4,6 +4,8 @@ Many years ago, when I was playing around and having fun with IoT devices and el
 
 This interactive web application visualizes RPM (Revolutions Per Minute) using a rotating bar animation powered by pure CSS animations instead of Canvas and manual drawing approaches that other tools typically use. Perfect for educational purposes, demonstrations, or understanding rotational speed concepts.
 
+https://github.com/user-attachments/assets/2b3e9cfe-eccb-4500-95d9-c11bc15beac5
+
 ## 🎯 Features
 
 - **Real-time Visualization**: Watch a rotating bar spin at the exact RPM you set
